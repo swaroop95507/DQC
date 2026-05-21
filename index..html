@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quality Inspection Form</title>
+
+  <style>
+    :root {
+      --primary: #0b4f93;
+      --primary-dark: #083b70;
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --border: #d8e1ec;
+      --text: #1f2937;
+      --muted: #64748b;
+      --ok-bg: #e6f7ec;
+      --ok-text: #0f6b35;
+      --ng-bg: #fdeaea;
+      --ng-text: #b42318;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+      font-size: 34px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    .form-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border);
+    }
+
+    .top-fields {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 15px;
+      background: white;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #f8fbff;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #eaf2ff;
+      color: var(--primary-dark);
+      font-weight: bold;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 950px;
+    }
+
+    thead {
+      background: var(--primary);
+      color: white;
+    }
+
+    th,
+    td {
+      padding: 14px;
+      border: 1px solid var(--border);
+      vertical-align: middle;
+      font-size: 15px;
+    }
+
+    th {
+      text-align: center;
+      font-size: 15px;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f8fbff;
+    }
+
+    .item-col {
+      text-align: center;
+      font-weight: bold;
+      width: 80px;
+    }
+
+    .check-col {
+      min-width: 400px;
+      line-height: 1.5;
+    }
+
+    .check-label {
+      font-weight: bold;
+      color: var(--primary-dark);
+    }
+
+    .judge-col {
+      min-width: 280px;
+      text-align: center;
+    }
+
+    .actual-col {
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .radio-group {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .radio-group label {
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .radio-group input {
+      transform: scale(1.2);
+      margin-right: 5px;
+    }
+
+    .actual-input {
+      width: 90%;
+      padding: 9px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .ok-box {
+      background: var(--ok-bg);
+      color: var(--ok-text);
+      border: 1px solid #b7ebc6;
+      font-weight: bold;
+      border-radius: 6px;
+      padding: 9px;
+      display: inline-block;
+      min-width: 90px;
+    }
+
+    .ng-box {
+      background: var(--ng-bg);
+      color: var(--ng-text);
+      border: 1px solid #f3b8b8;
+      font-weight: bold;
+      border-radius: 6px;
+      padding: 9px;
+      display: inline-block;
+      min-width: 90px;
+    }
+
+    .write-actual-label {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 13px 35px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .save-btn {
+      background: white;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .submit-btn {
+      background: #0b63ce;
+      color: white;
+    }
+
+    .clear-btn {
+      background: white;
+      color: #333;
+      border: 1px solid #9ca3af;
+    }
+
+    .loading,
+    .empty-message {
+      text-align: center;
+      padding: 20px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .error-message {
+      text-align: center;
+      padding: 20px;
+      font-weight: bold;
+      color: var(--ng-text);
+      background: var(--ng-bg);
+    }
+
+    @media (max-width: 900px) {
+      .top-fields {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .top-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .page {
+        margin: 10px auto;
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <h1>Quality Inspection Form</h1>
+    <div class="subtitle">Select a part number to load the related inspection checks from Google Sheets.</div>
+
+    <div class="form-card">
+      <div class="top-fields">
+        <div class="field">
+          <label for="inspectionDate">Inspection Date</label>
+          <input type="date" id="inspectionDate" />
+        </div>
+
+        <div class="field">
+          <label for="inspector">Inspector</label>
+          <input type="text" id="inspector" placeholder="Enter inspector name" />
+        </div>
+
+        <div class="field">
+          <label for="partNumberDropdown">Part Number</label>
+          <select id="partNumberDropdown">
+            <option value="">Loading part numbers...</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="line">Line</label>
+          <select id="line">
+            <option value="">Select Line</option>
+            <option>Line 1</option>
+            <option>Line 2</option>
+            <option>Line 3</option>
+            <option>Line 4</option>
+            <option>Line 5</option>
+            <option>Line 6</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="shift">Shift</label>
+          <select id="shift">
+            <option value="">Select Shift</option>
+            <option>1st Shift</option>
+            <option>2nd Shift</option>
+            <option>3rd Shift</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="lotNumber">Lot Number</label>
+          <input type="text" id="lotNumber" placeholder="Enter lot number" />
+        </div>
+      </div>
+
+      <div class="status-bar">
+        <div id="loadStatus">Loading inspection master data...</div>
+        <div class="status-pill" id="checkCount">0 Checks</div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Item #</th>
+              <th>Check Item / Check Method / Criteria</th>
+              <th>Type of Judgement</th>
+              <th>Actual</th>
+            </tr>
+          </thead>
+
+          <tbody id="inspectionTableBody">
+            <tr>
+              <td colspan="4" class="loading">Loading inspection items from Google Sheets...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="buttons">
+        <button class="save-btn" type="button" onclick="saveDraft()">Save Draft</button>
+        <button class="submit-btn" type="button" id="submitButton" onclick="submitInspection()">Submit Inspection</button>
+        <button class="clear-btn" type="button" onclick="clearForm()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /************************************************************
+     * GOOGLE SHEET / APPS SCRIPT SETTINGS
+     ************************************************************/
+
+    const GOOGLE_SHEET_ID = "1c-N8DMMT0Z-WqGI1joPkPdZGbstln_u4aGB4izWrudg";
+    const GOOGLE_SHEET_GID = "1017827220";
+
+    // This pulls the inspection master data from the sheet tab.
+    // Your sheet must be shared/published so the GitHub page can read it.
+    const GOOGLE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GOOGLE_SHEET_GID}`;
+
+    // This saves submitted inspection results back to Google Sheets.
+    const GOOGLE_APPS_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzP1szsHubjHyNdSKZDT_UthMrHirahP7Gb481OisiWDsmFW1eHStcowSur1mXdlw6XjQ/exec";
+
+    let inspectionData = [];
+
+    document.addEventListener("DOMContentLoaded", function () {
+      setTodayDate();
+      loadInspectionData();
+    });
+
+    function setTodayDate() {
+      const today = new Date().toISOString().split("T")[0];
+      document.getElementById("inspectionDate").value = today;
+    }
+
+    async function loadInspectionData() {
+      const tableBody = document.getElementById("inspectionTableBody");
+      const dropdown = document.getElementById("partNumberDropdown");
+      const loadStatus = document.getElementById("loadStatus");
+
+      try {
+        const response = await fetch(GOOGLE_SHEET_CSV_URL);
+
+        if (!response.ok) {
+          throw new Error(`Could not load Google Sheet data. Status: ${response.status}`);
+        }
+
+        const csvText = await response.text();
+        const rows = parseCSV(csvText);
+
+        if (rows.length < 2) {
+          throw new Error("No inspection rows found in Google Sheet.");
+        }
+
+        inspectionData = csvRowsToObjects(rows).filter(function (row) {
+          return row.part_number && row.item_no;
+        });
+
+        if (inspectionData.length === 0) {
+          throw new Error("No valid rows found. Please check column headers and data.");
+        }
+
+        buildPartNumberDropdown(inspectionData);
+        loadStatus.textContent = "Inspection master data loaded successfully.";
+      } catch (error) {
+        console.error("Error loading inspection data:", error);
+
+        dropdown.innerHTML = `<option value="">Could not load parts</option>`;
+        loadStatus.textContent = "Could not load inspection master data.";
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="4" class="error-message">
+              Could not load inspection items. Please check Google Sheet sharing, published access, and column headers.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function buildPartNumberDropdown(data) {
+      const dropdown = document.getElementById("partNumberDropdown");
+      dropdown.innerHTML = `<option value="">Select Part Number</option>`;
+
+      const partNumbers = [...new Set(data.map(function (item) {
+        return item.part_number;
+      }))].sort();
+
+      partNumbers.forEach(function (partNumber) {
+        const option = document.createElement("option");
+        option.value = partNumber;
+        option.textContent = partNumber;
+        dropdown.appendChild(option);
+      });
+
+      dropdown.addEventListener("change", function () {
+        updateInspectionTable(this.value);
+      });
+
+      if (partNumbers.length > 0) {
+        document.getElementById("inspectionTableBody").innerHTML = `
+          <tr>
+            <td colspan="4" class="empty-message">Please select a part number to start inspection.</td>
+          </tr>
+        `;
+        document.getElementById("checkCount").textContent = "0 Checks";
+      }
+    }
+
+    function updateInspectionTable(partNumber) {
+      const tbody = document.getElementById("inspectionTableBody");
+      const checkCount = document.getElementById("checkCount");
+      tbody.innerHTML = "";
+
+      if (!partNumber) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="empty-message">Please select a part number.</td>
+          </tr>
+        `;
+        checkCount.textContent = "0 Checks";
+        return;
+      }
+
+      const items = inspectionData.filter(function (item) {
+        return item.part_number === partNumber;
+      });
+
+      checkCount.textContent = `${items.length} Checks`;
+
+      if (items.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="empty-message">No inspection checks found for this part number.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      items.forEach(function (item, index) {
+        const row = document.createElement("tr");
+        const itemNo = item.item_no || index + 1;
+        const uniqueName = `judgement_${sanitizeId(partNumber)}_${index}`;
+        const judgementType = (item.judgement_type || "").toUpperCase().trim();
+
+        let judgementHtml = "";
+        let actualHtml = "";
+
+        if (judgementType === "OK_NG") {
+          judgementHtml = `
+            <div class="radio-group">
+              <label>
+                <input type="radio" name="${uniqueName}" value="OK" onchange="updateActualDisplay('${uniqueName}', 'OK')">
+                OK
+              </label>
+              <label>
+                <input type="radio" name="${uniqueName}" value="NG" onchange="updateActualDisplay('${uniqueName}', 'NG')">
+                NG
+              </label>
+            </div>
+          `;
+          actualHtml = `<span id="${uniqueName}_display">-</span>`;
+        } else {
+          judgementHtml = `<span class="write-actual-label">Write Actual</span>`;
+          actualHtml = `
+            <input
+              type="text"
+              class="actual-input"
+              id="${uniqueName}_actual"
+              placeholder="Enter actual value"
+            />
+          `;
+        }
+
+        row.innerHTML = `
+          <td class="item-col">${escapeHtml(itemNo)}</td>
+          <td class="check-col">
+            <div><span class="check-label">Check Item:</span> ${escapeHtml(item.check_item || "")}</div>
+            <div><span class="check-label">Check Method:</span> ${escapeHtml(item.check_method || "")}</div>
+            <div><span class="check-label">Criteria:</span> ${escapeHtml(item.criteria || "")}</div>
+          </td>
+          <td class="judge-col">${judgementHtml}</td>
+          <td class="actual-col">${actualHtml}</td>
+        `;
+
+        tbody.appendChild(row);
+      });
+    }
+
+    function updateActualDisplay(name, value) {
+      const displaySpan = document.getElementById(`${name}_display`);
+
+      if (!displaySpan) {
+        return;
+      }
+
+      if (value === "OK") {
+        displaySpan.innerHTML = `<span class="ok-box">OK</span>`;
+      } else if (value === "NG") {
+        displaySpan.innerHTML = `<span class="ng-box">NG</span>`;
+      }
+    }
+
+    function collectInspectionData() {
+      const headerData = {
+        inspectionDate: document.getElementById("inspectionDate").value,
+        inspector: document.getElementById("inspector").value.trim(),
+        partNumber: document.getElementById("partNumberDropdown").value,
+        line: document.getElementById("line").value,
+        shift: document.getElementById("shift").value,
+        lotNumber: document.getElementById("lotNumber").value.trim()
+      };
+
+      const partNumber = headerData.partNumber;
+      const items = inspectionData.filter(function (item) {
+        return item.part_number === partNumber;
+      });
+
+      const results = items.map(function (item, index) {
+        const uniqueName = `judgement_${sanitizeId(partNumber)}_${index}`;
+        const judgementType = (item.judgement_type || "").toUpperCase().trim();
+
+        let judgement = "";
+        let actual = "";
+
+        if (judgementType === "OK_NG") {
+          const selected = document.querySelector(`input[name="${uniqueName}"]:checked`);
+          judgement = selected ? selected.value : "";
+          actual = judgement;
+        } else {
+          const actualInput = document.getElementById(`${uniqueName}_actual`);
+          actual = actualInput ? actualInput.value.trim() : "";
+          judgement = "ACTUAL";
+        }
+
+        return {
+          part_number: partNumber,
+          item_no: item.item_no || "",
+          check_item: item.check_item || "",
+          check_method: item.check_method || "",
+          criteria: item.criteria || "",
+          judgement_type: item.judgement_type || "",
+          judgement: judgement,
+          actual: actual
+        };
+      });
+
+      return {
+        header: headerData,
+        results: results
+      };
+    }
+
+    function validateInspection(data) {
+      if (!data.header.partNumber) {
+        return "Please select a part number before submitting.";
+      }
+
+      if (!data.header.inspector) {
+        return "Please enter inspector name before submitting.";
+      }
+
+      if (data.results.length === 0) {
+        return "No inspection checks found for the selected part number.";
+      }
+
+      for (let i = 0; i < data.results.length; i++) {
+        const row = data.results[i];
+
+        if (!row.actual) {
+          return `Please complete Item #${row.item_no || i + 1} before submitting.`;
+        }
+      }
+
+      return "";
+    }
+
+    function saveDraft() {
+      const data = collectInspectionData();
+      localStorage.setItem("inspectionDraft", JSON.stringify(data));
+      alert("Draft saved on this device.");
+    }
+
+    function submitInspection() {
+      const data = collectInspectionData();
+      const validationMessage = validateInspection(data);
+
+      if (validationMessage) {
+        alert(validationMessage);
+        return;
+      }
+
+      const submitButton = document.getElementById("submitButton");
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting...";
+
+      /************************************************************
+       * IMPORTANT:
+       * Do NOT add headers: { "Content-Type": "application/json" }
+       * Do NOT remove mode: "no-cors"
+       *
+       * Adding Content-Type causes a browser preflight request.
+       * Google Apps Script often blocks that preflight from GitHub Pages.
+       ************************************************************/
+      fetch(GOOGLE_APPS_SCRIPT_WEBAPP_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(data)
+      })
+        .then(function () {
+          alert("Inspection submitted successfully. Please check the InspectionResults tab in Google Sheets.");
+          clearForm(false);
+        })
+        .catch(function (error) {
+          console.error("Error submitting inspection:", error);
+          alert("Error submitting inspection. Please check the browser console.");
+        })
+        .finally(function () {
+          submitButton.disabled = false;
+          submitButton.textContent = "Submit Inspection";
+        });
+    }
+
+    function clearForm(askConfirmation = true) {
+      if (askConfirmation && !confirm("Are you sure you want to clear the form?")) {
+        return;
+      }
+
+      setTodayDate();
+      document.getElementById("inspector").value = "";
+      document.getElementById("line").value = "";
+      document.getElementById("shift").value = "";
+      document.getElementById("lotNumber").value = "";
+      document.getElementById("partNumberDropdown").value = "";
+      document.getElementById("checkCount").textContent = "0 Checks";
+      document.getElementById("inspectionTableBody").innerHTML = `
+        <tr>
+          <td colspan="4" class="empty-message">Please select a part number to start inspection.</td>
+        </tr>
+      `;
+    }
+
+    /************************************************************
+     * CSV HELPERS
+     * This avoids needing PapaParse CDN and removes the tracking warning.
+     ************************************************************/
+
+    function parseCSV(text) {
+      const rows = [];
+      let currentRow = [];
+      let currentValue = "";
+      let insideQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"' && insideQuotes && nextChar === '"') {
+          currentValue += '"';
+          i++;
+        } else if (char === '"') {
+          insideQuotes = !insideQuotes;
+        } else if (char === "," && !insideQuotes) {
+          currentRow.push(currentValue);
+          currentValue = "";
+        } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+          if (char === "\r" && nextChar === "\n") {
+            i++;
+          }
+
+          currentRow.push(currentValue);
+          rows.push(currentRow);
+          currentRow = [];
+          currentValue = "";
+        } else {
+          currentValue += char;
+        }
+      }
+
+      if (currentValue !== "" || currentRow.length > 0) {
+        currentRow.push(currentValue);
+        rows.push(currentRow);
+      }
+
+      return rows.filter(function (row) {
+        return row.some(function (cell) {
+          return String(cell).trim() !== "";
+        });
+      });
+    }
+
+    function csvRowsToObjects(rows) {
+      const headers = rows[0].map(function (header) {
+        return normalizeHeader(header);
+      });
+
+      return rows.slice(1).map(function (row) {
+        const obj = {};
+
+        headers.forEach(function (header, index) {
+          obj[header] = row[index] ? String(row[index]).trim() : "";
+        });
+
+        return obj;
+      });
+    }
+
+    function normalizeHeader(header) {
+      return String(header)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-z0-9_]/g, "");
+    }
+
+    function sanitizeId(value) {
+      return String(value).replace(/[^a-zA-Z0-9_-]/g, "_");
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>
